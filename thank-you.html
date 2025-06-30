@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Veloura - Thank you for contacting us">
+    <title>شكراً لطلبك | Veloura</title>
+    <link rel="icon" type="image/png" href="logo.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="./styles.css">
+    <style>
+        /* Thank You Page Styles */
+        body {
+            font-family: 'Cairo', 'Tajawal', sans-serif;
+            background-color: #000;
+            margin: 0;
+            padding: 0;
+            direction: rtl;
+            color: #fff;
+        }
+        
+        /* Mobile Navigation Styles */
+        .mobile-nav-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 998;
+            display: none;
+        }
+
+        .mobile-nav {
+            position: fixed;
+            top: 0;
+            right: -280px;
+            width: 280px;
+            height: 100vh;
+            background-color: #111;
+            z-index: 999;
+            transition: transform 0.3s ease;
+            padding: 20px;
+            box-shadow: -2px 0 5px rgba(0, 0, 0, 0.3);
+            border-left: 1px solid #FF0066;
+        }
+
+        .mobile-nav.active {
+            transform: translateX(-280px);
+        }
+
+        .mobile-nav-overlay.active {
+            display: block;
+        }
+
+        .close-nav {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            font-size: 20px;
+            cursor: pointer;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #FF0066;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            border: 1px solid #333;
+            color: white;
+        }
+
+        .mobile-nav-links {
+            margin-top: 60px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .mobile-nav-links a {
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+            padding: 10px;
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
+            border-bottom: 1px solid #333;
+        }
+
+        .mobile-nav-links a:hover {
+            background-color: #2a2a2a;
+            color: #FF0066;
+        }
+        
+        .thank-you-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .thank-you-card {
+            background-color: #111;
+            border-radius: 15px;
+            box-shadow: 0 5px 30px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            max-width: 600px;
+            width: 90%;
+            margin: 0 auto;
+            border: 2px solid #FF0066;
+        }
+        
+        .thank-you-icon {
+            font-size: 80px;
+            color: #FF0066;
+            margin-bottom: 20px;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+        
+        .thank-you-card h1 {
+            margin-bottom: 15px;
+            color: white;
+            font-size: 32px;
+            font-weight: bold;
+        }
+        
+        .thank-you-card p {
+            margin-bottom: 25px;
+            color: #e0e0e0;
+            line-height: 1.6;
+            font-size: 18px;
+        }
+        
+        .back-btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            margin: 5px;
+            background-color: #FF0066;
+            color: white;
+            font-size: 16px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .back-btn:hover {
+            background-color: #E91E63;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+    </style>
+</head>
+<body>
+    <!-- Mobile Navigation -->
+    <div class="mobile-nav-overlay" id="mobile-nav-overlay"></div>
+    <nav class="mobile-nav" id="mobile-nav">
+        <span class="close-nav" id="close-nav"><i class="fas fa-times"></i></span>
+        <div class="mobile-nav-links">
+            <a href="index.html">🏠 الرئيسية</a>
+            <a href="delivery_policy.html">📦 سياسة الشحن</a>
+            <a href="products.html">💄 المنتجات</a>
+            <a href="#" id="mobile-contact-link">📞 اتصل بنا</a>
+        </div>
+    </nav>
+
+    <div class="thank-you-container">
+        <div class="thank-you-card">
+            <div class="thank-you-icon">
+                <i class="fas fa-envelope-open-text"></i>
+            </div>
+            <h1>🙏 شكراً لتواصلك معنا! 🙏</h1>
+            <p>✨ تم استلام رسالتك بنجاح. سنرد عليك في أقرب وقت ممكن. نقدر اهتمامك ونتطلع للتواصل معك. ✨</p>
+            <a href="index.html" class="back-btn">🏠 العودة للصفحة الرئيسية</a>
+        </div>
+    </div>
+
+    <div class="logo-container">
+        <img src="logo.png" alt="Veloura Logo" class="store-logo">
+        <div class="store-name">Veloura</div>
+    </div>
+
+    <div class="footer-logo">
+        <img src="logo.png" alt="Veloura Logo" width="40">
+        <h3>Veloura</h3>
+    </div>
+
+    <a href="https://wa.me/2130554758040" class="whatsapp-float" target="_blank">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Mobile navigation setup
+            const menuButton = document.getElementById('menu-button');
+            const closeNav = document.getElementById('close-nav');
+            const mobileNav = document.getElementById('mobile-nav');
+            const mobileNavOverlay = document.getElementById('mobile-nav-overlay');
+            
+            // Close nav button click handler
+            if (closeNav) {
+                closeNav.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    mobileNav.classList.remove('active');
+                    mobileNavOverlay.classList.remove('active');
+                    document.body.style.overflow = '';
+                });
+            }
+            
+            // Overlay click handler
+            if (mobileNavOverlay) {
+                mobileNavOverlay.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    mobileNav.classList.remove('active');
+                    mobileNavOverlay.classList.remove('active');
+                    document.body.style.overflow = '';
+                });
+            }
+            
+            // Mobile nav links click handler
+            const mobileNavLinks = document.querySelectorAll('.mobile-nav-links a');
+            mobileNavLinks.forEach(link => {
+                if (!link.id || link.id !== 'mobile-contact-link') {
+                    link.addEventListener('click', function() {
+                        mobileNav.classList.remove('active');
+                        mobileNavOverlay.classList.remove('active');
+                        document.body.style.overflow = '';
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html> 

@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Veloura Admin Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #4e73df;
+            --secondary-color: #858796;
+            --success-color: #1cc88a;
+            --info-color: #36b9cc;
+            --warning-color: #f6c23e;
+            --danger-color: #e74a3b;
+            --light-color: #f8f9fc;
+            --dark-color: #5a5c69;
+            --sidebar-width: 250px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Nunito', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+        
+        body {
+            background-color: #f8f9fc;
+        }
+        
+        /* Login Page Styles */
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, var(--primary-color), #224abe);
+        }
+        
+        .login-card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+            width: 400px;
+            padding: 2rem;
+        }
+        
+        .login-card h2 {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
+        }
+        
+        .login-card .logo {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .login-card .logo i {
+            font-size: 3rem;
+            color: var(--primary-color);
+        }
+        
+        /* Dashboard Layout */
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: linear-gradient(180deg, var(--primary-color) 10%, #224abe 100%);
+            color: white;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            transition: all 0.3s;
+        }
+        
+        .sidebar-header {
+            padding: 1.5rem;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .sidebar-header h3 {
+            margin: 0;
+            font-size: 1.2rem;
+        }
+        
+        .sidebar-menu {
+            padding: 1rem 0;
+        }
+        
+        .sidebar-menu-item {
+            padding: 0.8rem 1.5rem;
+            display: flex;
+            align-items: center;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        
+        .sidebar-menu-item:hover, .sidebar-menu-item.active {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+        
+        .sidebar-menu-item i {
+            margin-right: 0.8rem;
+            width: 20px;
+            text-align: center;
+        }
+        
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            padding: 1.5rem;
+        }
+        
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid #e3e6f0;
+        }
+        
+        .topbar h1 {
+            font-size: 1.8rem;
+            color: var(--dark-color);
+            margin: 0;
+        }
+        
+        /* User Dropdown */
+        .user-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .user-dropdown-btn {
+            display: flex;
+            align-items: center;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--secondary-color);
+            padding: 8px 12px;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        .user-dropdown-btn:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+        
+        .user-dropdown-btn i {
+            font-size: 1.5rem;
+            margin-right: 0.5rem;
+        }
+        
+        .user-dropdown-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            background-color: white;
+            min-width: 160px;
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+            z-index: 1;
+            border-radius: 0.35rem;
+        }
+        
+        .user-dropdown-content.show {
+            display: block;
+        }
+        
+        .user-dropdown-content a {
+            color: var(--secondary-color);
+            padding: 0.8rem 1rem;
+            text-decoration: none;
+            display: block;
+        }
+        
+        .user-dropdown-content a:hover {
+            background-color: #f8f9fc;
+        }
+        
+        /* Dashboard Cards */
+        .dashboard-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 0.35rem;
+            box-shadow: 0 0.15rem 1.75rem rgba(0, 0, 0, 0.15);
+            padding: 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card-primary {
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .card-success {
+            border-left: 4px solid var(--success-color);
+        }
+        
+        .card-info {
+            border-left: 4px solid var(--info-color);
+        }
+        
+        .card-warning {
+            border-left: 4px solid var(--warning-color);
+        }
+        
+        .card-title {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            color: var(--secondary-color);
+            margin-bottom: 0.5rem;
+        }
+        
+        .card-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        
+        .card-icon {
+            position: absolute;
+            right: 1rem;
+            top: 1rem;
+            opacity: 0.4;
+            font-size: 2rem;
+        }
+        
+        /* Product Management */
+        .product-form {
+            background: white;
+            border-radius: 0.35rem;
+            box-shadow: 0 0.15rem 1.75rem rgba(0, 0, 0, 0.15);
+            padding: 1.5rem;
+            margin: 0 auto 1.5rem;
+            max-width: 600px;
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+        
+        .form-control {
+            display: block;
+            width: 100%;
+            padding: 0.5rem 0.75rem;
+            font-size: 1rem;
+            border: 1px solid #d1d3e2;
+            border-radius: 0.35rem;
+            transition: border-color 0.15s ease-in-out;
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary-color);
+            outline: 0;
+            box-shadow: 0 0 0 0.1rem rgba(78, 115, 223, 0.25);
+        }
+        
+        .btn {
+            display: inline-block;
+            font-weight: 600;
+            color: white;
+            text-align: center;
+            vertical-align: middle;
+            border: 1px solid transparent;
+            padding: 0.5rem 1rem;
+            font-size: 1rem;
+            line-height: 1.5;
+            border-radius: 0.35rem;
+            cursor: pointer;
+            transition: background-color 0.15s;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        
+        .btn-primary:hover {
+            background-color: #2653d4;
+            border-color: #244ec9;
+        }
+        
+        .btn-success {
+            background-color: var(--success-color);
+            border-color: var(--success-color);
+        }
+        
+        .btn-success:hover {
+            background-color: #17a673;
+            border-color: #169b6b;
+        }
+        
+        .btn-danger {
+            background-color: var(--danger-color);
+            border-color: var(--danger-color);
+        }
+        
+        .btn-danger:hover {
+            background-color: #e02d1b;
+            border-color: #d52a1a;
+        }
+        
+        /* Product List Styles */
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .product-card {
+            background: white;
+            border-radius: 0.35rem;
+            box-shadow: 0 0.15rem 1.75rem rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+            height: 400px;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .product-image {
+            height: 200px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s;
+        }
+        
+        .product-card:hover .product-image img {
+            transform: scale(1.05);
+        }
+        
+        .product-details {
+            padding: 1rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        
+        .product-text {
+            text-align: left;
+            margin-bottom: 0.5rem;
+        }
+        
+        .product-name {
+            margin: 0 0 5px;
+            font-size: 16px;
+            font-weight: 600;
+        }
+        
+        .product-price-container {
+            margin: 8px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .product-price {
+            font-weight: bold;
+            font-size: 1.1rem;
+            color: var(--dark-color);
+        }
+        
+        .original-price {
+            text-decoration: line-through;
+            color: var(--secondary-color);
+            font-size: 0.9rem;
+            margin-right: 0.5rem;
+        }
+        
+        .discounted-price {
+            font-weight: bold;
+            font-size: 1.1rem;
+            color: var(--danger-color);
+        }
+        
+        .discount-badge {
+            display: inline-block;
+            background-color: var(--danger-color);
+            color: white;
+            padding: 0.2rem 0.4rem;
+            border-radius: 0.25rem;
+            font-size: 0.8rem;
+            margin-left: 0.5rem;
+        }
+        
+        .product-sizes {
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--secondary-color);
+        }
+        
+        .product-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 0.5rem;
+        }
+        
+        .btn-edit, .btn-delete {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.9rem;
+            color: white;
+            border: none;
+            border-radius: 0.25rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            transition: background-color 0.2s;
+        }
+        
+        .btn-edit {
+            background-color: var(--info-color);
+        }
+        
+        .btn-edit:hover {
+            background-color: #2a93a3;
+        }
+        
+        .btn-delete {
+            background-color: var(--danger-color);
+        }
+        
+        .btn-delete:hover {
+            background-color: #c33a2c;
+        }
+        
+        .btn-edit i, .btn-delete i {
+            margin-right: 0.3rem;
+        }
+        
+        /* Settings Page */
+        .settings-form {
+            background: white;
+            border-radius: 0.35rem;
+            box-shadow: 0 0.15rem 1.75rem rgba(0, 0, 0, 0.15);
+            padding: 1.5rem;
+        }
+        
+        /* Size Checkbox Container */
+        .size-checkbox-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .size-checkbox {
+            display: inline-flex;
+            align-items: center;
+        }
+        
+        .size-checkbox input[type="checkbox"] {
+            margin-right: 0.3rem;
+        }
+        
+        /* Color Checkbox Container */
+        .color-checkbox-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .color-checkbox {
+            display: inline-flex;
+            align-items: center;
+        }
+        
+        .color-checkbox input[type="checkbox"] {
+            margin-right: 0.3rem;
+        }
+        
+        /* Toast Notification */
+        .toast-notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--success-color);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 4px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            z-index: 1000;
+        }
+        
+        .toast-notification.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        /* Responsive Styles */
+        @media (max-width: 991px) {
+            .sidebar {
+                transform: translateX(-100%);
+                z-index: 100;
+            }
+            
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .topbar {
+                padding-left: 1rem;
+                display: flex;
+                align-items: center;
+            }
+            
+            .dashboard-cards {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            }
+            
+            .hamburger-menu {
+                display: flex !important;
+            }
+        }
+        
+        /* Phone-specific styles */
+        @media (max-width: 768px) {
+            .product-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
+            
+            .product-card {
+                height: 380px;
+            }
+            
+            .product-image {
+                height: 180px;
+            }
+            
+            .product-name {
+                font-size: 0.9rem;
+            }
+            
+            .btn-edit, .btn-delete {
+                padding: 0.3rem 0.6rem;
+                font-size: 0.8rem;
+            }
+
+            .product-form {
+                padding: 1rem;
+                margin: 0 auto 1rem;
+            }
+            
+            .form-group label {
+                font-size: 0.9rem;
+            }
+            
+            .topbar h1 {
+                font-size: 1.4rem;
+            }
+            
+            .hamburger-menu {
+                margin-right: 0.5rem;
+            }
+            
+            .hamburger-menu span {
+                background-color: #333;
+                height: 4px;
+            }
+        }
+        
+        /* Very small screens */
+        @media (max-width: 480px) {
+            .product-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 8px;
+            }
+            
+            .product-card {
+                height: 350px;
+            }
+            
+            .form-control {
+                padding: 0.4rem 0.6rem;
+                font-size: 0.9rem;
+            }
+            
+            .btn {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.9rem;
+            }
+            
+            .topbar {
+                padding: 0.5rem 0;
+                margin-bottom: 1rem;
+            }
+            
+            .user-dropdown-btn {
+                padding: 6px 8px;
+            }
+            
+            .user-dropdown-btn i {
+                font-size: 1.2rem;
+                margin-right: 0.3rem;
+            }
+        }
+        
+        /* Hamburger Menu */
+        .hamburger-menu {
+            display: none;
+            flex-direction: column;
+            justify-content: space-around;
+            width: 30px;
+            height: 25px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            margin-right: 1rem;
+            z-index: 200;
+            position: relative;
+        }
+        
+        .hamburger-menu span {
+            width: 30px;
+            height: 3px;
+            background-color: var(--dark-color);
+            border-radius: 3px;
+            transition: all 0.3s ease;
+            transform-origin: center;
+            position: relative;
+        }
+        
+        /* Hamburger to X animation */
+        .hamburger-menu.open span:nth-child(1) {
+            transform: translateY(9px) rotate(45deg);
+        }
+        
+        .hamburger-menu.open span:nth-child(2) {
+            opacity: 0;
+        }
+        
+        .hamburger-menu.open span:nth-child(3) {
+            transform: translateY(-9px) rotate(-45deg);
+        }
+        
+        /* Add text-center class for centering buttons */
+        .text-center {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Section -->
+    <section id="loginSection" class="login-container">
+        <div class="login-card">
+            <div class="logo">
+                <i class="fas fa-shopping-bag"></i>
+            </div>
+            <h2>Veloura Admin</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" class="form-control" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Login</button>
+            </form>
+        </div>
+    </section>
+    
+    <!-- Admin Dashboard -->
+    <section id="adminPanel" class="dashboard-container" style="display: none;">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h3>Veloura Admin</h3>
+            </div>
+            <nav class="sidebar-menu">
+                <a href="#dashboard" class="sidebar-menu-item">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#products" class="sidebar-menu-item">
+                    <i class="fas fa-box"></i>
+                    <span>Products</span>
+                </a>
+                <a href="#settings" class="sidebar-menu-item">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+            </nav>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="topbar">
+                <button class="hamburger-menu" id="toggleSidebar">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <h1 id="pageTitle">Dashboard</h1>
+                <div class="user-dropdown">
+                    <button class="user-dropdown-btn">
+                        <i class="fas fa-user-circle"></i>
+                        <span>Admin</span>
+                    </button>
+                    <div class="user-dropdown-content">
+                        <a href="#settings" id="settingsLink">
+                            <i class="fas fa-cog"></i> Settings
+                        </a>
+                        <a href="#" id="logoutBtn">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Dashboard Section -->
+            <div id="dashboard" class="content-section">
+                <div class="dashboard-cards">
+                    <div class="card card-primary">
+                        <div class="card-title">Products</div>
+                        <div class="card-value" id="totalProducts">0</div>
+                        <div class="card-icon">
+                            <i class="fas fa-box"></i>
+                        </div>
+                    </div>
+                    <div class="card card-warning">
+                        <div class="card-title">Revenue</div>
+                        <div class="card-value" id="totalRevenue">$0</div>
+                        <div class="card-icon">
+                            <i class="fas fa-dollar-sign"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h2>Recent Products</h2>
+                    <div class="product-grid" id="recentProducts">
+                        <!-- Products will be loaded here -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Products Section -->
+            <div id="products" class="content-section" style="display: none;">
+                <div class="product-form">
+                    <h2>إضافة منتج جديد</h2>
+                    <form id="addProductForm">
+                        <div class="form-group">
+                            <label for="productName">اسم المنتج</label>
+                            <input type="text" id="productName" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="productCategory">الفئة</label>
+                            <div id="productCategoriesContainer" class="category-checkboxes">
+                                <!-- Les checkboxes seront ajoutés dynamiquement ici -->
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="productPrice">السعر (دج)</label>
+                            <input type="number" id="productPrice" class="form-control" min="0" step="0.01" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="productDiscount">التخفيض (%)</label>
+                            <input type="number" id="productDiscount" class="form-control" min="0" max="100" value="0">
+                        </div>
+                        <div class="form-group">
+                            <label>الصور</label>
+                            <div id="image-url-container">
+                                <div class="image-url-input-group" style="display: flex; margin-bottom: 5px;">
+                                    <input type="url" id="productImage" class="form-control image-url-input" placeholder="رابط الصورة الرئيسية" required>
+                                    <button type="button" class="btn btn-sm btn-danger remove-image-btn" style="margin-left: 5px; display: none;">✕</button>
+                                </div>
+                            </div>
+                            <button type="button" id="add-image-btn" class="btn btn-sm btn-primary" style="margin-top: 5px;">+ إضافة صورة أخرى</button>
+                            <small class="form-text text-muted">الصورة الأولى ستكون الصورة الرئيسية للمنتج</small>
+                        </div>
+                        <div class="form-group text-center">
+                            <button type="submit" class="btn btn-primary">إضافة المنتج</button>
+                        </div>
+                    </form>
+                </div>
+                
+                <div class="card">
+                    <h2>All Products</h2>
+                    <div class="product-grid" id="productList">
+                        <!-- Products will be loaded here -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Settings Section -->
+            <div id="settings" class="content-section" style="display: none;">
+                <div class="settings-form">
+                    <h2>Admin Settings</h2>
+                    <form id="settingsForm">
+                        <div class="form-group">
+                            <label for="adminEmail">Admin Email</label>
+                            <input type="email" id="adminEmail" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="currentPassword">Current Password</label>
+                            <input type="password" id="currentPassword" class="form-control" 
+                                   placeholder="Enter current password to make changes">
+                        </div>
+                        <div class="form-group">
+                            <label for="newPassword">New Password</label>
+                            <input type="password" id="newPassword" class="form-control" 
+                                   placeholder="Leave blank to keep current password">
+                        </div>
+                        <div class="form-group">
+                            <label for="confirmPassword">Confirm New Password</label>
+                            <input type="password" id="confirmPassword" class="form-control" 
+                                   placeholder="Confirm new password">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Update Settings</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Toast Notification -->
+    <div id="toast-notification" class="toast-notification">
+        <span class="toast-notification-message">Operation successful!</span>
+    </div>
+    
+    <!-- Scripts -->
+    <script type="module" src="admin.js"></script>
+    <script>
+        // Hamburger menu functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggleSidebar = document.getElementById('toggleSidebar');
+            const sidebar = document.querySelector('.sidebar');
+            const userDropdownBtn = document.querySelector('.user-dropdown-btn');
+            const userDropdownContent = document.querySelector('.user-dropdown-content');
+            const menuItems = document.querySelectorAll('.sidebar-menu-item');
+            
+            // Hamburger menu toggle
+            if (toggleSidebar && sidebar) {
+                toggleSidebar.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    sidebar.classList.toggle('active');
+                    toggleSidebar.classList.toggle('open');
+                });
+                
+                // Close sidebar when clicking outside on mobile
+                document.addEventListener('click', function(e) {
+                    const isClickInsideSidebar = sidebar.contains(e.target);
+                    const isClickOnToggle = toggleSidebar.contains(e.target);
+                    
+                    if (!isClickInsideSidebar && !isClickOnToggle && window.innerWidth <= 991 && sidebar.classList.contains('active')) {
+                        sidebar.classList.remove('active');
+                        toggleSidebar.classList.remove('open');
+                    }
+                });
+                
+                // Close sidebar when a menu item is clicked on mobile
+                menuItems.forEach(item => {
+                    item.addEventListener('click', function() {
+                        if (window.innerWidth <= 991) {
+                            sidebar.classList.remove('active');
+                            toggleSidebar.classList.remove('open');
+                        }
+                    });
+                });
+            }
+            
+            // User dropdown toggle
+            if (userDropdownBtn && userDropdownContent) {
+                userDropdownBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    userDropdownContent.classList.toggle('show');
+                });
+                
+                // Close dropdown when clicking outside
+                document.addEventListener('click', function(e) {
+                    if (!userDropdownBtn.contains(e.target) && !userDropdownContent.contains(e.target)) {
+                        userDropdownContent.classList.remove('show');
+                    }
+                });
+            }
+            
+            // Handle settings link in dropdown
+            const settingsLink = document.getElementById('settingsLink');
+            if (settingsLink) {
+                settingsLink.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Hide all content sections
+                    document.querySelectorAll('.content-section').forEach(section => {
+                        section.style.display = 'none';
+                    });
+                    
+                    // Show settings section
+                    document.getElementById('settings').style.display = 'block';
+                    
+                    // Update page title
+                    document.getElementById('pageTitle').textContent = 'Settings';
+                    
+                    // Update active sidebar item
+                    document.querySelectorAll('.sidebar-menu-item').forEach(item => {
+                        item.classList.remove('active');
+                        if (item.getAttribute('href') === '#settings') {
+                            item.classList.add('active');
+                        }
+                    });
+                    
+                    // Close dropdown
+                    document.querySelector('.user-dropdown-content').classList.remove('show');
+                });
+            }
+        });
+    </script>
+</body>
+</html> 
